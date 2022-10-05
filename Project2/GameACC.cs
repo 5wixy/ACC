@@ -10,12 +10,14 @@ namespace ACC
     {
         Texture2D ballTexture;
         Vector2 ballPosition;
+        Circle circle = new Circle();
         Helpers helpers = new Helpers();
+       
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SpriteFont font;
-
+        
         public GameACC()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -29,7 +31,8 @@ namespace ACC
         {
             // TODO: Add your initialization logic here
             Random rnd = new Random();
-            ballPosition = new Vector2(rnd.Next(0, _graphics.PreferredBackBufferWidth), rnd.Next(0, _graphics.PreferredBackBufferHeight));
+            Circle circle = new Circle(rnd.Next(0, _graphics.PreferredBackBufferWidth), rnd.Next(0, _graphics.PreferredBackBufferHeight),ballTexture);
+            //ballPosition = new Vector2(rnd.Next(0, _graphics.PreferredBackBufferWidth), rnd.Next(0, _graphics.PreferredBackBufferHeight));
             base.Initialize();
         }
 
@@ -51,17 +54,19 @@ namespace ACC
             var kstate = Keyboard.GetState();
             var mousestate = Mouse.GetState();
             Random rnd = new Random();
+            Boolean flag;
 
-            if (kstate.IsKeyDown(Keys.X))
+            if (kstate.IsKeyDown(Keys.X) || kstate.IsKeyDown(Keys.Z))
                // take ball width / 2 and add it to the point
             {
                 // sqrt((x_2 - x_1)^2 + (y_2 - y_1)^2)
                 Vector2 v1 = new Vector2(mousestate.X, mousestate.Y);
                 Debug.WriteLine(mousestate.X + mousestate.Y);
-                if (helpers.distance(v1,ballPosition) < ballTexture.Width/2)
+                if (helpers.distance(v1,circle.GetPos()) < ballTexture.Width/2)
                 {
                     Debug.WriteLine("Collision Detected");
-                    ballPosition = new Vector2(rnd.Next(0, _graphics.PreferredBackBufferWidth), rnd.Next(0, _graphics.PreferredBackBufferHeight));
+                   // circle.circlePosition = new Vector2(rnd.Next(0, _graphics.PreferredBackBufferWidth), rnd.Next(0, _graphics.PreferredBackBufferHeight));
+                   circle.SetPos(rnd.Next(0, _graphics.PreferredBackBufferWidth), rnd.Next(0, _graphics.PreferredBackBufferHeight));
                 }
 
             }
@@ -78,7 +83,7 @@ namespace ACC
             _spriteBatch.Begin();
             _spriteBatch.Draw(
                     ballTexture,
-                    ballPosition,
+                    circle.GetPos(),
                     null,
                     Color.White,
                     0f,
@@ -87,6 +92,7 @@ namespace ACC
                     SpriteEffects.None,
                     0f
                     );
+
             _spriteBatch.End();
             base.Draw(gameTime);
         }
